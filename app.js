@@ -9,13 +9,114 @@
   };
   firebase.initializeApp(config);
 
+  
   //THIS VAR IS USED WHEN REFERNCING THE DATABASE
   var database = firebase.database();
 
-  //PSUEDO CODE-BUILDOUT OF THE SUBMIT BUT THAT WILL ADD TO TRAIN SCHEDULE
+  //CALCULATE NEXT ARRIVAL TIME
+  //PARAMETER: TIME-TIME OF FIRST TRAIN
+  //PARAMETER: FREQ - HOW OFTEN THE TRAIN COMES
+  //PARAMETER: RETURN - MOMENT OBJECT OF NEXT ARRIVAL
+  function calcNextArrival(time, freq){
+    var mTime = moment(time,'H:mm');
+    console.log(moment(mTime).format('h:mm'));
+    while (mTime.diff(moment(), 'm') <= 0) {
+      mTime.add(freq, 'm');
+    }
+      return mTime;
+  }
 
-  //PSUEDO CODE-BUILDOUT THE JQUERY CODE THAT WILL CAPTURE INPUTS
+  //CALCULATE MINUTES BEFORE TRAIN ARRIVES
+  function calcMinuteAway(mArrival) {
+    return(moment(mArrival).diff(moment(), 'm'));
+  }
 
-  //PSUEDO CODE-BUILDOUT OBJECT FOR HOLDING THE INPUTS AND THE PUSH UP TO DATABASE
+  //RETRIEVE FROM DATABASE
+  database.ref().on("child_added", function(snapshot, prevChildKey){
+    var trainName = snapshot.val().trainName;
+    var trainDest = snapshot.val().trainDest;
+    var firstTrainTime = snapshot.val().firstTrainTime;
+    var frequency = snapshot.val().frequency;
+    //console.log(firstTrainTime)
+    updateTable(trainName, trainDest, firstTrainTime, frequency);
+  });
+
+  //DISPLAY SCHEDULE IN TABLE
+  function updateTable(trainName, trainDest, firstTrainTime, frequency){
+    var entry;
+    var mNextArrival = calcNextArrival(firstTime, freq);
+    var minuteAway = calcMinuteAway(mNextArrival);
+    var minuteAway = calcMinuteAway(mNextArrival);
+    var arrivalString = moment(mNextArrival).format("h:mmA");
+    // console.log(arrivalString);
+  entry = `<tr><td>${name}</td><td>${dest}</td><td class="td-freq">${freq}</td><td class="td-arrival">${arrivalString}</td><td class="td-away">${minuteAway}</td></tr>`;
+  $('#table-schedule > tbody').append(entry);
+
+}
+  
+
+  //CREATE BUTTON FOR ADDING NEW TRAIN ENTRY
+
+  $("add-train-btn").on("click", function(event){
+      event.preventDefault();
+
+  //RECORD USER INPUT IN VARIABLES
+
+  var trainName = $("#train-name-input").val().trim();
+  var trainDest = $("#destination-input").val().trim();
+  var firstTrainTime = $("#train-time-input").val().trim();
+  var frequency = $("#frequency-input").val().trim();
+
+  //ADD TO FIREBASE VIA PUSH
+
+  var newTrain = {
+    name: trainName,
+    destination: trainDest,
+    firstTrainTime: firstTrainTime,
+    frequency: frequency,
+  };
+
+  //UPLOADS INPUTS INTO FIREBASE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  });
