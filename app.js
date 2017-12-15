@@ -32,7 +32,7 @@
   }
 
   //RETRIEVE FROM DATABASE
-  database.ref().on("child_added", function(snapshot, prevChildKey){
+    database.ref().on("child_added", function(snapshot, prevChildKey){
     var trainName = snapshot.val().trainName;
     var trainDest = snapshot.val().trainDest;
     var firstTrainTime = snapshot.val().firstTrainTime;
@@ -44,7 +44,7 @@
   //DISPLAY SCHEDULE IN TABLE
   function updateTable(trainName, trainDest, firstTrainTime, frequency){
     var entry;
-    var mNextArrival = calcNextArrival(firstTime, freq);
+    var mNextArrival = calcNextArrival(10, 20);
     var minuteAway = calcMinuteAway(mNextArrival);
     var minuteAway = calcMinuteAway(mNextArrival);
     var arrivalString = moment(mNextArrival).format("h:mmA");
@@ -57,16 +57,16 @@
 
   //CREATE BUTTON FOR ADDING NEW TRAIN ENTRY
 
-  $("add-train-btn").on("click", function(event){
+  $("#add-train-btn").on("click", function(event){
       event.preventDefault();
-
+      console.log("it works");
   //RECORD USER INPUT IN VARIABLES
 
   var trainName = $("#train-name-input").val().trim();
   var trainDest = $("#destination-input").val().trim();
   var firstTrainTime = $("#train-time-input").val().trim();
   var frequency = $("#frequency-input").val().trim();
-
+  console.log(trainName);
   //ADD TO FIREBASE VIA PUSH
 
   var newTrain = {
@@ -74,9 +74,17 @@
     destination: trainDest,
     firstTrainTime: firstTrainTime,
     frequency: frequency,
-  };
+    
+    };
 
-  //UPLOADS INPUTS INTO FIREBASE
+  //UPLOADS NEW TRAIN INFO INTO FIREBASE
+
+  database.ref().push(newTrain);
+
+  console.log(newTrain.name);
+
+
+
 
 
 
